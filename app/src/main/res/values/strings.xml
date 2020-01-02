@@ -2,6 +2,9 @@
     <string name="app_name">Grow</string>
     <string name="spinner_text">Choose:</string>
 
+    <string name="button_run">STOP</string>
+    <string name="button_stopped">RUN</string>
+
     <string-array name="spinner_stringArray">
         <item>Count Up</item>
         <item>Count Down</item>
