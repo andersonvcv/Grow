@@ -13,9 +13,9 @@ public class BindingAdapters {
 //        }
 //    }
 
-    @BindingAdapter(value = {"android:visibility", "android:spinnerItemSelected"}, requireAll = false)
-    public static void setVisibility(View view, String buttonText, String spinnerItemSelected){
-        if (buttonText.equals("RUN") && spinnerItemSelected.equals("Count Down")){
+    @BindingAdapter(value = {"android:visibility", "android:spinnerTimerMode"}, requireAll = false)
+    public static void setVisibility(View view, Boolean isTimerRunning, Boolean isTimerCountingUp){
+        if (!isTimerRunning && !isTimerCountingUp){
             view.setVisibility(View.VISIBLE);
         } else {
             view.setVisibility(View.INVISIBLE);
