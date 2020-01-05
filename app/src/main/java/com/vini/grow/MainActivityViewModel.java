@@ -2,24 +2,31 @@ package com.vini.grow;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.SeekBar;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModel;
 
-public class MainActivityViewModel extends ViewModel {
+public class MainActivityViewModel extends ViewModel implements LifecycleObserver {
 
     private MutableLiveData<String> timerText = new MutableLiveData<>();
     private MutableLiveData<Boolean> isTimerRunning = new MutableLiveData<>();
     private MutableLiveData<Boolean> isTimerCountingUp = new MutableLiveData<>();
+    private MutableLiveData<String> toToast = new MutableLiveData<>();
+
     private Handler countUpHandler = new Handler();
     private CountDownTimer countDownTimer;
     private long startTime;
     private int seekbarCountDownMinutes;
     //CONSTs
     private final String BT_TEXT_DEFAULT = "0:00.00";
-    private final String SPINNER_TEXT_COUNTUP = "Count Up";
+    private final String SPINNER_TEXT_COUNTUP = "Count Up"; // Same name as in strings.xml resource
     // / Updates timer label every second
     private Runnable countUpRunnable = new Runnable() {
         @Override
@@ -59,6 +66,9 @@ public class MainActivityViewModel extends ViewModel {
     }
     public MutableLiveData<Boolean> getIsTimerCountingUp() {
         return isTimerCountingUp;
+    }
+    public MutableLiveData<String> getToToast() {
+        return toToast;
     }
 
     public void buttonOnClick(){
@@ -139,5 +149,17 @@ public class MainActivityViewModel extends ViewModel {
 
     private void updateTimerText(String string){
         timerText.setValue(string);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    private void onAppBackgrounded(){
+        Log.i("testLifecycle", "onAppBackgrounded: ");
+        toToast.setValue("Backgrounded");
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    private void onAppForegrounded(){
+        Log.i("testLifecycle", "onAppForegrounded: ");
+        toToast.setValue("Foregrounded");
     }
 }
