@@ -6,11 +6,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
-
-
 import com.vini.grow.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
+
+        // Set context to singleton
+        ResourcesProvider.getInstance().setApplicationContext(getApplicationContext());
 
         // Biding configuration
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -42,5 +41,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
             }
         });
+
     }
 }

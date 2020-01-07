@@ -24,9 +24,10 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
     private CountDownTimer countDownTimer;
     private long startTime;
     private int seekbarCountDownMinutes;
-    //CONSTs
-    private final String BT_TEXT_DEFAULT = "0:00.00";
-    private final String SPINNER_TEXT_COUNTUP = "Count Up"; // Same name as in strings.xml resource
+
+    // Singleton to get resources
+    ResourcesProvider resourcesProvider = ResourcesProvider.getInstance();
+
     // / Updates timer label every second
     private Runnable countUpRunnable = new Runnable() {
         @Override
@@ -46,7 +47,7 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
         seekbarCountDownMinutes = 60;
 
         // LiveData variables
-        updateTimerText(BT_TEXT_DEFAULT);
+        updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
         isTimerCountingUp.setValue(true);
 
         // Initialization is necessary in order to cancel without crashing
@@ -73,11 +74,10 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
 
     public void buttonOnClick(){
         isTimerRunning.setValue(!isTimerRunning.getValue());
-
         if (isTimerRunning.getValue()){
 
             if (isTimerCountingUp.getValue()) {
-                updateTimerText(BT_TEXT_DEFAULT);
+                updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
 
                 startTime = System.currentTimeMillis();
                 countUpHandler.removeCallbacks(countUpRunnable);
@@ -106,14 +106,14 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
 
     public void getSpinnerSelectedItem(AdapterView<?> parent, View view, int pos, long id){
         // get spinner value
-        isTimerCountingUp.setValue(parent.getSelectedItem().toString().equals(SPINNER_TEXT_COUNTUP));
+        isTimerCountingUp.setValue(parent.getSelectedItem().toString().equals(resourcesProvider.getStringResource(R.string.spinner_count_up))); //SPINNER_TEXT_COUNTUP
 
         // update timerText with correct values when changing spinner value
         if (!isTimerCountingUp.getValue() && !isTimerRunning.getValue()){
             updateTimerText(seekbarCountDownMinutes);
 
         } else if (isTimerCountingUp.getValue() && !isTimerRunning.getValue()){
-            updateTimerText(BT_TEXT_DEFAULT);
+            updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
         }
     }
 
@@ -127,7 +127,7 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
 
     public void timerTextOnCLick(){
         if (!isTimerRunning.getValue() && isTimerCountingUp.getValue())
-            updateTimerText(BT_TEXT_DEFAULT);
+            updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
     }
 
     private void updateTimerText(int min){

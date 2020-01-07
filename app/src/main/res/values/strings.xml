@@ -5,8 +5,12 @@
     <string name="bt_running">STOP</string>
     <string name="bt_stopped">RUN</string>
 
+    <string name="spinner_count_up">Count Up</string>
+    <string name="spinner_count_down">Count Down</string>
+    <string name="spinner_defaultTime">0:00.00</string>
+
     <string-array name="spinner_stringArray">
-        <item>Count Up</item>
-        <item>Count Down</item>
+        <item>@string/spinner_count_up</item>
+        <item>@string/spinner_count_down</item>
     </string-array>
 </resources>
