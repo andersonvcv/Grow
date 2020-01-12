@@ -1,4 +1,4 @@
-package com.vini.grow;
+package com.vini.grow.util;
 import android.content.Context;
 
 /*
@@ -6,11 +6,11 @@ import android.content.Context;
     How to use: set the context with getApplicationContext() as soon as possible in order to set the
     context before other methods are used
  */
-class ResourcesProvider {
+public class ResourcesProvider {
     private static final ResourcesProvider ourInstance = new ResourcesProvider();
     private Context applicationContext;
 
-    static ResourcesProvider getInstance() {
+    public static ResourcesProvider getInstance() {
         return ourInstance;
     }
 

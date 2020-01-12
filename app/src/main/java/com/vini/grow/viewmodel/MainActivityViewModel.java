@@ -1,4 +1,4 @@
-package com.vini.grow;
+package com.vini.grow.viewmodel;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -13,9 +13,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModel;
 
+import com.vini.grow.R;
+import com.vini.grow.util.ResourcesProvider;
+
 public class MainActivityViewModel extends ViewModel implements LifecycleObserver {
 
     private MutableLiveData<String> timerText = new MutableLiveData<>();
+    private MutableLiveData<String> lastTimerText = new MutableLiveData<>();
     private MutableLiveData<Boolean> isTimerRunning = new MutableLiveData<>();
     private MutableLiveData<Boolean> isTimerCountingUp = new MutableLiveData<>();
     private MutableLiveData<String> toToast = new MutableLiveData<>();
@@ -26,28 +30,28 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
     private int seekbarCountDownMinutes;
 
     // Singleton to get resources
+    // Class can be unloaded if reference is not kept in viewmodel
     ResourcesProvider resourcesProvider = ResourcesProvider.getInstance();
 
-    // / Updates timer label every second
     private Runnable countUpRunnable = new Runnable() {
         @Override
-        public void run() {
+        public void run() { // / Updates timer label every second
             long millis = System.currentTimeMillis() - startTime;
-            updateTimerText(millis);
+            updateTimerText(timerText, millis);
 
             countUpHandler.postDelayed(countUpRunnable, 1000);
         }
     };
 
     public MainActivityViewModel(){
-
         // Private variables
         isTimerRunning.setValue(false);
         startTime = 0;
         seekbarCountDownMinutes = 60;
+        updateTimerText(timerText,0);
+        updateTimerText(lastTimerText,0);
 
         // LiveData variables
-        updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
         isTimerCountingUp.setValue(true);
 
         // Initialization is necessary in order to cancel without crashing
@@ -62,6 +66,9 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
     public MutableLiveData<String> getTimerText() {
         return timerText;
     }
+    public MutableLiveData<String> getLastTimerText() {
+        return lastTimerText;
+    }
     public MutableLiveData<Boolean> getIsTimerRunning() {
         return isTimerRunning;
     }
@@ -75,19 +82,20 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
     public void buttonOnClick(){
         isTimerRunning.setValue(!isTimerRunning.getValue());
         if (isTimerRunning.getValue()){
-
             if (isTimerCountingUp.getValue()) {
-                updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
+                updateTimerText(lastTimerText, timerText.getValue());
+                updateTimerText(timerText,0);
 
                 startTime = System.currentTimeMillis();
                 countUpHandler.removeCallbacks(countUpRunnable);
                 countUpHandler.postDelayed(countUpRunnable, 1000); // Updates timer label every second
 
             } else if (!isTimerCountingUp.getValue()){
+                updateTimerText(lastTimerText, timerText.getValue());
                 countDownTimer = new CountDownTimer(seekbarCountDownMinutes * 1000 * 60, 1000){
                     @Override
                     public void onTick(long millisUntillFinished) {
-                        updateTimerText(millisUntillFinished);
+                        updateTimerText(timerText,millisUntillFinished);
                     }
 
                     @Override
@@ -110,10 +118,10 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
 
         // update timerText with correct values when changing spinner value
         if (!isTimerCountingUp.getValue() && !isTimerRunning.getValue()){
-            updateTimerText(seekbarCountDownMinutes);
+            updateTimerText(timerText, seekbarCountDownMinutes);
 
         } else if (isTimerCountingUp.getValue() && !isTimerRunning.getValue()){
-            updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
+            updateTimerText(timerText, 0);
         }
     }
 
@@ -121,34 +129,50 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
         // Update timer_text with countdown timer setup
         if (!isTimerRunning.getValue() && !isTimerCountingUp.getValue()){
             seekbarCountDownMinutes = pos; // to setup CountDown Timer
-            updateTimerText(pos);
+            updateTimerText(timerText, pos);
         }
     }
 
     public void timerTextOnCLick(){
+        // Zero out the timer
         if (!isTimerRunning.getValue() && isTimerCountingUp.getValue())
-            updateTimerText(resourcesProvider.getStringResource(R.string.spinner_defaultTime));
+            updateTimerText(timerText, 0);
+        // Restore seekbar
+        else if (!isTimerRunning.getValue() && !isTimerCountingUp.getValue())
+            updateTimerText(timerText, seekbarCountDownMinutes);
     }
 
-    private void updateTimerText(int min){
+    private void updateTimerText(MutableLiveData mutableLiveData, int min){
             int minutes = min;
             int hours = minutes / 60;
             minutes = minutes % 60;
 
-            timerText.setValue(String.format("%d:%02d.00", hours, minutes));
+            mutableLiveData.setValue(String.format("%d:%02d.00", hours, minutes));
     }
 
-    private void updateTimerText(long miliseconds){
+    private void updateTimerText(MutableLiveData mutableLiveData, long miliseconds){
         int seconds = (int) (miliseconds / 1000);
         int minutes = seconds / 60;
         int hours = minutes / 60;
         seconds = seconds % 60;
         minutes = minutes % 60;
-        timerText.setValue(String.format("%d:%02d.%02d", hours, minutes, seconds));
+        mutableLiveData.setValue(String.format("%d:%02d.%02d", hours, minutes, seconds));
     }
 
-    private void updateTimerText(String string){
-        timerText.setValue(string);
+    private void updateTimerText(MutableLiveData mutableLiveData, String string) {
+        if (!isTimerCountingUp.getValue()){
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(string);
+
+            int minutes = seekbarCountDownMinutes;
+            int hours = minutes / 60;
+            minutes = minutes % 60;
+
+            stringBuilder.append(String.format("\\%d:%02d.00", hours, minutes));
+
+            mutableLiveData.setValue(stringBuilder.toString());
+        } else
+            mutableLiveData.setValue(string);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
