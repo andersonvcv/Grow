@@ -2,11 +2,9 @@ package com.vini.grow;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.vini.grow.util.ResourcesProvider;
 import com.vini.grow.viewmodel.MainActivityViewModel;
@@ -19,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
 
         // Set context to singleton in order to get resources in the viewmodel
         ResourcesProvider.getInstance().setApplicationContext(getApplicationContext());
@@ -36,12 +33,12 @@ public class MainActivity extends AppCompatActivity {
         binding.setViewmodel(mainActivityViewModel);
 
         // Show toast
-        mainActivityViewModel.getToToast().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-            }
-        });
+//        mainActivityViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
+//            @Override
+//            public void onChanged(List<User> users) {
+//                Toast.makeText(getApplicationContext(), users.get(1).getFisrtName(), Toast.LENGTH_LONG).show();
+//            }
+//        });
 
     }
 }

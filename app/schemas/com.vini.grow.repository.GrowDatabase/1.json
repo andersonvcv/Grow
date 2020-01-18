@@ -1,0 +1,234 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "3e7d075bb70a4f08362cb32cffa8adcd",
+    "entities": [
+      {
+        "tableName": "users_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fisrtName` TEXT, `familyName` TEXT, `nickName` TEXT, `email` TEXT, `coins` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fisrtName",
+            "columnName": "fisrtName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "familyName",
+            "columnName": "familyName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nickName",
+            "columnName": "nickName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "coins",
+            "columnName": "coins",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_users_table_uid",
+            "unique": true,
+            "columnNames": [
+              "uid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_users_table_uid` ON `${TABLE_NAME}` (`uid`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "tasks_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `description` TEXT, `tags` TEXT, `userUID` INTEGER NOT NULL, `startDatetime` INTEGER NOT NULL, `stopDatetime` INTEGER NOT NULL, `status` INTEGER NOT NULL, `reward` INTEGER NOT NULL, FOREIGN KEY(`userUID`) REFERENCES `users_table`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tags",
+            "columnName": "tags",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userUID",
+            "columnName": "userUID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startDatetime",
+            "columnName": "startDatetime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stopDatetime",
+            "columnName": "stopDatetime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reward",
+            "columnName": "reward",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_tasks_table_userUID",
+            "unique": true,
+            "columnNames": [
+              "userUID"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_tasks_table_userUID` ON `${TABLE_NAME}` (`userUID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "users_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "userUID"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "friendships_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userUID` INTEGER NOT NULL, `friendUID` INTEGER NOT NULL, FOREIGN KEY(`userUID`) REFERENCES `users_table`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`friendUID`) REFERENCES `users_table`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userUID",
+            "columnName": "userUID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "friendUID",
+            "columnName": "friendUID",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_friendships_table_userUID",
+            "unique": true,
+            "columnNames": [
+              "userUID"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_friendships_table_userUID` ON `${TABLE_NAME}` (`userUID`)"
+          },
+          {
+            "name": "index_friendships_table_friendUID",
+            "unique": true,
+            "columnNames": [
+              "friendUID"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_friendships_table_friendUID` ON `${TABLE_NAME}` (`friendUID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "users_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "userUID"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          },
+          {
+            "table": "users_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "friendUID"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e7d075bb70a4f08362cb32cffa8adcd')"
+    ]
+  }
+}

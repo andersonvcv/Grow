@@ -21,6 +21,10 @@ public class ResourcesProvider {
         this.applicationContext = applicationContext;
     }
 
+    public Context gettApplicationContext() {
+        return applicationContext;
+    }
+
     public String getStringResource(int resourceID){
         return applicationContext.getString(resourceID);
     }
