@@ -5,6 +5,7 @@ import android.widget.AdapterView;
 import android.widget.SeekBar;
 
 import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -12,35 +13,40 @@ import com.vini.grow.R;
 import com.vini.grow.repository.Repository;
 import com.vini.grow.util.ResourcesProvider;
 import com.vini.grow.viewmodel.utils.Chronometer;
-import com.vini.grow.viewmodel.utils.Presenter;
+import com.vini.grow.viewmodel.utils.ChronometerPresenter;
+import com.vini.grow.viewmodel.utils.IChronometerPresenter;
 
 public class MainActivityViewModel extends ViewModel implements LifecycleObserver{
     // Singleton to get resources
     // Class can be unloaded if reference is not kept in viewmodel
     ResourcesProvider resourcesProvider = ResourcesProvider.getInstance();
 
-    private Repository repository;
-    private Presenter presenter;
-
-    private MutableLiveData<String> timerText = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isTimerRunning = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isSpinnerSetToCountUp = new MutableLiveData<>();
-    private MutableLiveData<String> toToast = new MutableLiveData<>();
-    private MutableLiveData<String> userCoins = new MutableLiveData<>();
-
     private final String STRINGFORMAT = "%d:%02d.%02d";
-    private Chronometer chronometer = new Chronometer(timerText, STRINGFORMAT, isTimerRunning);
 
+    private Repository repository;
+    private IChronometerPresenter presenter;
+    private Chronometer chronometer;
     private int seekbarCountDownMinutes;
 
-    public MainActivityViewModel(){
-        repository = new Repository();
+    private MutableLiveData<String> timerText;
+    private MutableLiveData<Boolean> isTimerRunning;
+    private MutableLiveData<Boolean> isSpinnerSetToCountUp;
+    private MutableLiveData<String> toToast;
+    private MutableLiveData<String> userCoins ;
 
-        presenter = new Presenter();
+    public MainActivityViewModel(){
+        timerText = new MutableLiveData<>();
+        isTimerRunning = new MutableLiveData<>();
+        isSpinnerSetToCountUp = new MutableLiveData<>();
+        toToast = new MutableLiveData<>();
+        userCoins = new MutableLiveData<>();
+
+        repository = new Repository();
+        presenter = new ChronometerPresenter();
+        chronometer = new Chronometer(timerText, presenter, STRINGFORMAT, isTimerRunning);
         presenter.updateTimerText(timerText, 0, STRINGFORMAT);
 
         seekbarCountDownMinutes = 25;
-
         isSpinnerSetToCountUp.setValue(true);
         userCoins.setValue(String.valueOf(0));
     }
@@ -100,19 +106,19 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
 //        toToast.setValue("Foregrounded");
 //    }
 
-    public MutableLiveData<String> getTimerText() {
+    public LiveData<String> getTimerText() {
         return timerText;
     }
-    public MutableLiveData<Boolean> getIsTimerRunning() {
+    public LiveData<Boolean> getIsTimerRunning() {
         return isTimerRunning;
     }
-    public MutableLiveData<Boolean> getIsSpinnerSetToCountUp() {
+    public LiveData<Boolean> getIsSpinnerSetToCountUp() {
         return isSpinnerSetToCountUp;
     }
-    public MutableLiveData<String> getToToast() {
+    public LiveData<String> getToToast() {
         return toToast;
     }
-    public MutableLiveData<String> getUserCoins() {
+    public LiveData<String> getUserCoins() {
         return userCoins;
     }
 

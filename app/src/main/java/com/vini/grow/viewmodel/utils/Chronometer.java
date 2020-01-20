@@ -11,7 +11,7 @@ public class Chronometer {
     private MutableLiveData<Boolean> isTimerRunning;
     private String STRINGFORMAT;
 
-    private Presenter presenter;
+    private IChronometerPresenter presenter;
 
     private CountDownTimer countDownTimer;
 
@@ -26,9 +26,9 @@ public class Chronometer {
         }
     };
 
-    public Chronometer(MutableLiveData<String> timerText, String STRINGFORMAT, MutableLiveData<Boolean> isTimerRunning){
+    public Chronometer(MutableLiveData<String> timerText, IChronometerPresenter presenter, String STRINGFORMAT, MutableLiveData<Boolean> isTimerRunning){
         startTime = 0;
-        presenter = new Presenter();
+        this.presenter = presenter;
 
         this.STRINGFORMAT = STRINGFORMAT;
         this.timerText = timerText;
@@ -83,21 +83,4 @@ public class Chronometer {
         countDownTimer.cancel();
         isTimerRunning.setValue(false);
     }
-
-//    // Update View livedata through data binding
-//    private void updateTimerText(MutableLiveData mutableLiveData, int min){
-//        int minutes = min;
-//        int hours = minutes / 60;
-//        minutes = minutes % 60;
-//
-//        mutableLiveData.setValue(String.format(STRINGFORMAT, hours, minutes, 0));
-//    }
-//    private void updateTimerText(MutableLiveData mutableLiveData, long miliseconds){
-//        int seconds = (int) (miliseconds / 1000);
-//        int minutes = seconds / 60;
-//        int hours = minutes / 60;
-//        seconds = seconds % 60;
-//        minutes = minutes % 60;
-//        mutableLiveData.setValue(String.format(STRINGFORMAT, hours, minutes, seconds));
-//    }
 }
