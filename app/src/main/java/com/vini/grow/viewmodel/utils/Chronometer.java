@@ -5,6 +5,7 @@ import android.os.Handler;
 
 import androidx.lifecycle.MutableLiveData;
 
+// Android studio have a chronometer class but it restricts the minimun api to 23
 public class Chronometer {
     private long startTime;
     private MutableLiveData<String> timerText;
@@ -20,7 +21,6 @@ public class Chronometer {
         @Override
         public void run() { // Runs this method periodically
             long millis = System.currentTimeMillis() - startTime;
-//            updateTimerText(timerText, millis);
             presenter.updateTimerText(timerText, millis, STRINGFORMAT);
             countUpHandler.postDelayed(countUpRunnable, 1000);
         }
@@ -47,7 +47,6 @@ public class Chronometer {
     public void startCountUp(){
         isTimerRunning.setValue(true);
         startTime = System.currentTimeMillis();
-//        updateTimerText(timerText,0);
         presenter.updateTimerText(timerText, 0, STRINGFORMAT);
 
         countUpHandler.removeCallbacks(countUpRunnable);
@@ -57,12 +56,10 @@ public class Chronometer {
 
     public void startCountDown(int minutes){
         isTimerRunning.setValue(true);
-//        updateTimerText(timerText, minutes);
         presenter.updateTimerText(timerText, minutes, STRINGFORMAT);
         countDownTimer = new CountDownTimer(minutes * 1000 * 60, 1000){
             @Override
             public void onTick(long millisUntillFinished) {
-//                updateTimerText(timerText, millisUntillFinished);
                 presenter.updateTimerText(timerText, millisUntillFinished, STRINGFORMAT);
             }
 
@@ -83,21 +80,4 @@ public class Chronometer {
         countDownTimer.cancel();
         isTimerRunning.setValue(false);
     }
-
-//    // Update View livedata through data binding
-//    private void updateTimerText(MutableLiveData mutableLiveData, int min){
-//        int minutes = min;
-//        int hours = minutes / 60;
-//        minutes = minutes % 60;
-//
-//        mutableLiveData.setValue(String.format(STRINGFORMAT, hours, minutes, 0));
-//    }
-//    private void updateTimerText(MutableLiveData mutableLiveData, long miliseconds){
-//        int seconds = (int) (miliseconds / 1000);
-//        int minutes = seconds / 60;
-//        int hours = minutes / 60;
-//        seconds = seconds % 60;
-//        minutes = minutes % 60;
-//        mutableLiveData.setValue(String.format(STRINGFORMAT, hours, minutes, seconds));
-//    }
 }

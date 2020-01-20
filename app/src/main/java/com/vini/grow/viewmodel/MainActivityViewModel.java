@@ -16,7 +16,7 @@ import com.vini.grow.viewmodel.utils.Presenter;
 
 public class MainActivityViewModel extends ViewModel implements LifecycleObserver{
     // Singleton to get resources
-    // Class can be unloaded if reference is not kept in viewmodel
+    // Class can be unloaded if reference is not kept in ViewModel
     ResourcesProvider resourcesProvider = ResourcesProvider.getInstance();
 
     private Repository repository;
@@ -63,7 +63,7 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
         }
     }
 
-    // Spinner to select countdown/countup
+    // Spinner to select countdown/countUp
     public void getSpinnerSelectedItem(AdapterView<?> parent, View view, int pos, long id){
         isSpinnerSetToCountUp.setValue(parent.getSelectedItem().toString().equals(resourcesProvider.getStringResource(R.string.spinner_count_up))); //SPINNER_TEXT_COUNTUP
         // update timerText with correct values when changing spinner value
@@ -74,7 +74,7 @@ public class MainActivityViewModel extends ViewModel implements LifecycleObserve
         }
     }
 
-    // Seekbar to select countdow time
+    // Seekbar to select countdown time
     public void seekbarOnProgressChanged(SeekBar view, int pos, boolean fromUser){
         // Update timer_text with countdown timer setup
         if (!isTimerRunning.getValue() && !isSpinnerSetToCountUp.getValue()){
