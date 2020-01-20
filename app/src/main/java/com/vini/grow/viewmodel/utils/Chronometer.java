@@ -12,7 +12,7 @@ public class Chronometer {
     private MutableLiveData<Boolean> isTimerRunning;
     private String STRINGFORMAT;
 
-    private Presenter presenter;
+    private IChronometerPresenter presenter;
 
     private CountDownTimer countDownTimer;
 
@@ -26,9 +26,9 @@ public class Chronometer {
         }
     };
 
-    public Chronometer(MutableLiveData<String> timerText, String STRINGFORMAT, MutableLiveData<Boolean> isTimerRunning){
+    public Chronometer(MutableLiveData<String> timerText, IChronometerPresenter presenter, String STRINGFORMAT, MutableLiveData<Boolean> isTimerRunning){
         startTime = 0;
-        presenter = new Presenter();
+        this.presenter = presenter;
 
         this.STRINGFORMAT = STRINGFORMAT;
         this.timerText = timerText;

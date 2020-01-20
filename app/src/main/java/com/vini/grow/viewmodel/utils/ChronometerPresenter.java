@@ -2,8 +2,8 @@ package com.vini.grow.viewmodel.utils;
 
 import androidx.lifecycle.MutableLiveData;
 
-public class Presenter {
-    public Presenter(){}
+public class ChronometerPresenter implements IChronometerPresenter{
+    public ChronometerPresenter(){}
 
     // Update View livedata through data binding
     public void updateTimerText(MutableLiveData mutableLiveData, int min, String STRINGFORMAT){
