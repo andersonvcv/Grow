@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.vini.grow.ui.home.HomeRunViewModel" />
+            type="com.vini.grow.ui.home.HomeSharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
             android:id="@+id/tv_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{viewmodel.timerText, default="0:00.00"}'
+            android:text='@{viewmodel.getTimerTextRunning, default="0:00.00"}'
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:onClick="@{() -> viewmodel.buttonOnClick()}"
-            android:text="@{viewmodel.buttonText}"
+            android:onClick="@{() -> viewmodel.buttonHomeRunOnClick()}"
+            android:text='@{viewmodel.buttonTextRunning, default="Cancel"}'
             app:layout_constraintEnd_toEndOf="@+id/tv_timer"
             app:layout_constraintStart_toStartOf="@+id/tv_timer"
             app:layout_constraintTop_toBottomOf="@+id/tv_timer" />

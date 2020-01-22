@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.vini.grow.ui.home.HomeViewModel" />
+            type="com.vini.grow.ui.home.HomeSharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
             android:id="@+id/tv_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{viewmodel.timerText, default="0:00.00"}'
+            android:text='@{viewmodel.timerTextHome, default="0:00.00"}'
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:onClick="@{() -> viewmodel.buttonOnClick()}"
-            android:text="@string/bt_stopped"
+            android:onClick="@{() -> viewmodel.buttonHomeOnClick()}"
+            android:text="RUN"
             app:layout_constraintEnd_toEndOf="@+id/tv_timer"
             app:layout_constraintStart_toStartOf="@+id/tv_timer"
             app:layout_constraintTop_toBottomOf="@+id/tv_timer" />
@@ -50,11 +50,10 @@
             android:id="@+id/seekBar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:max="120"
+            android:max="25"
             android:min="1"
             android:onProgressChanged="@{(seekbar, progress, fromUser) -> viewmodel.seekbarOnProgressChanged(seekbar, progress, fromUser)}"
-            android:progress="60"
-            android:visibility="@{viewmodel.isSpinnerSetToCountUp}"
+            android:progress="@{viewmodel.seekBarTime}"
             app:layout_constraintBottom_toTopOf="@+id/tv_timer"
             app:layout_constraintEnd_toEndOf="@+id/textView"
             app:layout_constraintStart_toStartOf="@+id/textView"

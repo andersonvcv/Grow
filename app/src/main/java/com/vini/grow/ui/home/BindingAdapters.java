@@ -13,14 +13,14 @@ public class BindingAdapters {
 //        }
 //    }
 
-    @BindingAdapter(value = {"android:visibility"})
-    public static void setVisibility(View view, Boolean isSpinnerSetToCountUp){
-        if (!isSpinnerSetToCountUp){
-            view.setVisibility(View.VISIBLE);
-        } else {
-            view.setVisibility(View.INVISIBLE);
-        }
-    }
+//    @BindingAdapter(value = {"android:visibility"})
+//    public static void setVisibility(View view, Boolean isSpinnerSetToCountUp){
+//        if (!isSpinnerSetToCountUp){
+//            view.setVisibility(View.VISIBLE);
+//        } else {
+//            view.setVisibility(View.INVISIBLE);
+//        }
+//    }
 
 
 

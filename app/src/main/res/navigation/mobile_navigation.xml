@@ -23,12 +23,9 @@
         <action
             android:id="@+id/action_nav_home_run_to_nav_home_end"
             app:destination="@+id/nav_home_end" />
-        <argument
-            android:name="countUp"
-            app:argType="boolean" />
-        <argument
-            android:name="countDownTime"
-            app:argType="integer" />
+        <action
+            android:id="@+id/action_nav_home_run_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 
     <fragment
@@ -36,9 +33,6 @@
         android:name="com.vini.grow.ui.home.HomeEndFragment"
         android:label="@string/menu_home_end"
         tools:layout="@layout/fragment_home_end" >
-        <argument
-            android:name="victory"
-            app:argType="string" />
     </fragment>
 
     <fragment

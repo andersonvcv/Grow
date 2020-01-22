@@ -17,40 +17,51 @@ import androidx.navigation.Navigation;
 
 import com.vini.grow.R;
 import com.vini.grow.databinding.FragmentHomeEndBinding;
+import com.vini.grow.ui.home.utils.DrawerLocker;
 
 public class HomeEndFragment extends Fragment {
 
-    private HomeEndViewModel homeEndViewModel;
+    private HomeSharedViewModel homeSharedViewModel;
     private NavController navController;
+    private FragmentHomeEndBinding biding;
+    private DrawerLocker drawerLocker;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        // Set the same ViewModel everytime
-        homeEndViewModel = ViewModelProviders.of(this).get(HomeEndViewModel.class);
+
+        // Disable Drawer in this fragment
+        drawerLocker = (DrawerLocker) getActivity();
+        drawerLocker.setDrawerEnabled(false);
 
         // dataBiding
-        FragmentHomeEndBinding biding = DataBindingUtil.inflate(inflater, R.layout.fragment_home_end,
-                container, false);
-
-        biding.setViewmodel(homeEndViewModel);
-        biding.setLifecycleOwner(this);
-
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-
-        // Get data from previous fragment
-        homeEndViewModel.setValuesFromPreviousFragment(getArguments().getString("victory"));
-
-        // Navigate to next fragment
-//        homeEndViewModel.getNavigate().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(String s) {
-//                Bundle bundle = new Bundle();
-//                bundle.putString("victory", homeRunViewModel.getNavigate().getValue());
-//                navController.navigate(R.id.action_nav_home_run_to_nav_home_end, bundle);
-//            }
-//        });
+        biding = DataBindingUtil.inflate(inflater, R.layout.fragment_home_end, container, false);
 
         View root = biding.getRoot();
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Creating the viewmodel here we make sure that the OnCreate method of the underlying activity
+        // was finished
+        homeSharedViewModel = ViewModelProviders.of(getActivity()).get(HomeSharedViewModel.class);
+
+        // dataBiding here because we need viewmodel instantiated
+        biding.setViewmodel(homeSharedViewModel);
+        // set to view's lifecycle and not to the instance
+        biding.setLifecycleOwner(getViewLifecycleOwner());
+
+        // Navigate to next fragment
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+
+        homeSharedViewModel.getNavigate().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean navigate) {
+                if (navigate)
+                    navController.navigate(R.id.action_nav_home_run_to_nav_home_end);
+            }
+        });
     }
 }

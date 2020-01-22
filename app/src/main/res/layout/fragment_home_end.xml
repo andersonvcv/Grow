@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.vini.grow.ui.home.HomeEndViewModel" />
+            type="com.vini.grow.ui.home.HomeSharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
