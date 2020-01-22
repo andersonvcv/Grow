@@ -2,17 +2,19 @@ package com.vini.grow.ui.home.utils;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
-
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class Chronometer {
-    private long startTime;
     private MutableLiveData<String> timerText;
     private MutableLiveData<Boolean> isTimerRunning;
+    private MutableLiveData<String> countDownText;
+    private int iCountDown;
+    private long startTime;
     private String STRINGFORMAT;
 
-    private IChronometerPresenter presenter;
 
+    private IChronometerPresenter presenter;
     private CountDownTimer countDownTimer;
 
     private Handler countUpHandler = new Handler();
@@ -20,20 +22,24 @@ public class Chronometer {
         @Override
         public void run() { // Runs this method periodically
             long millis = System.currentTimeMillis() - startTime;
-//            updateTimerText(timerText, millis);
             presenter.updateTimerText(timerText, millis, STRINGFORMAT);
             countUpHandler.postDelayed(countUpRunnable, 1000);
         }
     };
 
-    public Chronometer(MutableLiveData<String> timerText, IChronometerPresenter presenter, String STRINGFORMAT, MutableLiveData<Boolean> isTimerRunning){
-        startTime = 0;
-        this.presenter = presenter;
+    public Chronometer(MutableLiveData<String> timerText, IChronometerPresenter presenter, String STRINGFORMAT){
+        countDownText = new MutableLiveData<>();
+        isTimerRunning = new MutableLiveData<>();
 
-        this.STRINGFORMAT = STRINGFORMAT;
+        this.presenter = presenter;
         this.timerText = timerText;
-        this.isTimerRunning = isTimerRunning;
+        this.STRINGFORMAT = STRINGFORMAT;
+
+        startTime = 0;
+        iCountDown = 10;
+        countDownText.setValue("Cancel (" + iCountDown + ")");
         isTimerRunning.setValue(false);
+
 
         // Initialization is necessary in order to cancel without crashing
         countDownTimer = new CountDownTimer(30000,1000) {
@@ -47,7 +53,6 @@ public class Chronometer {
     public void startCountUp(){
         isTimerRunning.setValue(true);
         startTime = System.currentTimeMillis();
-//        updateTimerText(timerText,0);
         presenter.updateTimerText(timerText, 0, STRINGFORMAT);
 
         countUpHandler.removeCallbacks(countUpRunnable);
@@ -57,13 +62,19 @@ public class Chronometer {
 
     public void startCountDown(int minutes){
         isTimerRunning.setValue(true);
-//        updateTimerText(timerText, minutes);
         presenter.updateTimerText(timerText, minutes, STRINGFORMAT);
         countDownTimer = new CountDownTimer(minutes * 1000 * 60, 1000){
             @Override
             public void onTick(long millisUntillFinished) {
-//                updateTimerText(timerText, millisUntillFinished);
                 presenter.updateTimerText(timerText, millisUntillFinished, STRINGFORMAT);
+                if (iCountDown >= 0){
+                    iCountDown = iCountDown-1;
+                    countDownText.setValue("Cancel (" + iCountDown + ")");
+                }
+                else if (iCountDown >= -1){
+                    iCountDown = iCountDown-1;
+                    countDownText.setValue("Cancel");
+                }
             }
 
             @Override
@@ -73,14 +84,15 @@ public class Chronometer {
         }.start();
     }
 
-    public boolean isRunning(){
-        return isTimerRunning.getValue();
-    }
-
     public void stop(){
         // Stop Handler/CountDownTimer
         countUpHandler.removeCallbacks(countUpRunnable);
         countDownTimer.cancel();
         isTimerRunning.setValue(false);
+        iCountDown = 10;
     }
+
+    public LiveData<Boolean> getIsTimerRunning(){return isTimerRunning;}
+    public LiveData<String> getCountDownText(){return countDownText;}
+
 }
